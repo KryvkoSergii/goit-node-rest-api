@@ -15,10 +15,11 @@ app.use((req, res, next) => {
   if (req.method === "PUT") {
     const validator = validateBody(createContactSchema);
     validator(req, res, next);
-  }
-  if (req.method === "POST") {
-    validateBody(updateContactSchema);
-    const validator = validator(req, res, next);
+  } else if (req.method === "POST") {
+    const validator = validateBody(updateContactSchema);
+    validator(req, res, next);
+  } else {
+    next();
   }
 });
 
