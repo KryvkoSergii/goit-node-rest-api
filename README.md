@@ -1,6 +1,6 @@
 # PostgresSQL and Sequelize
 
-- [English](README.md)
+- [Українська](README.ua.md)
 
 ## Step 0
 Create a branch `03-postgresql` from the `main` branch.
