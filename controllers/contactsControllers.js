@@ -1,60 +1,68 @@
-import contactsService from "../services/contactsServices.cjs";
+import { contactsService } from "../services/contactsServices.js";
+import { NotFoundError } from "../helpers/errors.js";
 
-const notFoundResponse = { "message": "Not found" };
+const errorBody = (msg) => ({ message: msg });
+
+function handleError(res, err) {
+  if (err instanceof NotFoundError) {
+    return res.status(404).json(errorBody(err.message));
+  } else {
+    return res.status(500).json(errorBody(err.message));
+  }
+}
+
+function handleSuccess(res, data) {
+  return res.status(200).json(data);
+}
 
 export const getAllContacts = (req, res) => {
-    contactsService.listContacts().then(data =>
-        res.status(200).json(data)
-    );
+  contactsService
+    .listContacts()
+    .then((data) => handleSuccess(res, data))
+    .catch((err) => handleError(res, err));
 };
 
 export const getOneContact = (req, res) => {
-    const id = req.params.id;
-    contactsService.getContactById(id).then(data => {
-        if (data) {
-            res.status(200).json(data);
-        } else {
-            res.status(404).json(notFoundResponse);
-        }
-    });
+  const id = req.params.id;
+  contactsService
+    .getContactById(id)
+    .then((data) => handleSuccess(res, data))
+    .catch((err) => handleError(res, err));
 };
 
 export const deleteContact = (req, res) => {
-    const id = req.params.id;
-    contactsService.removeContact(id).then(data => {
-        if (data) {
-            res.status(200).json(data);
-        } else {
-            res.status(404).json(notFoundResponse);
-        }
-    });
+  const id = req.params.id;
+  contactsService
+    .removeContact(id)
+    .then((data) => handleSuccess(res, data))
+    .catch((err) => handleError(res, err));
 };
 
 export const createContact = (req, res) => {
-    contactsService.addContact(req.body.name, req.body.email, req.body.phone).then(data => {
-        res.status(201).json(data);
-    });
+  contactsService
+    .addContact(req.body.name, req.body.email, req.body.phone)
+    .then((data) => handleSuccess(res, data))
+    .catch((err) => handleError(res, err));
 };
 
 export const updateContact = (req, res) => {
-    const id = req.params.id;
-    const name = req.body.name;
-    const email = req.body.email;
-    const phone = req.body.phone;
+  const id = req.params.id;
+  const name = req.body.name;
+  const email = req.body.email;
+  const phone = req.body.phone;
 
-    if (!id) {
-        return res.status(400).json({ error: "Missing 'id'" });
-    }
+  contactsService
+    .updateContact(id, name, email, phone)
+    .then((data) => handleSuccess(res, data))
+    .catch((err) => handleError(res, err));
+};
 
-    if (!name && !email && !phone) {
-        return res.status(400).json({ error: "Body must have at least one field" });
-    }
+export const updateStatusContact = (req, res) => {
+  const id = req.params.id;
+  const favorite = req.body.favorite;
 
-    contactsService.updateContact(id, name, email, phone).then(data => {
-        if (!data) {
-            res.status(404).json(notFoundResponse);
-        } else {
-            res.status(200).json(data);
-        }
-    });
+  contactsService
+    .updateStatusContact(id, favorite)
+    .then((data) => handleSuccess(res, data))
+    .catch((err) => handleError(res, err));
 };

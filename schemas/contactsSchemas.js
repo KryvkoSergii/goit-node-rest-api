@@ -22,3 +22,7 @@ export const updateContactSchema = Joi.object({
     email: Joi.string().email().optional(),
     phone: Joi.string().regex(phonePattern).optional()
 })
+
+export const favoriteContactSchema = Joi.object({
+    favorite: Joi.boolean().required()
+})

@@ -1,39 +1,54 @@
-# REST API
+# PostgresSQL та Sequelize
 
 - [English](README.md)
 
+## Крок 0
+Створи гілку `03-postgresql` з гілки `main`.
+
 ## Крок 1
-Cтвори репозиторій з назвою `goit-node-rest-api` і помісти на головну гілку (main) файли з папки src. Завваж: папки [src](https://github.com/goitacademy/neo-nodejs-homework/tree/main/hw2) в репозиторії бути не повинно, тебе цікавить лише її вміст.
-Створи гілку `hw02-express` з гілки `main`.
+Створи аккаунт на [Render](https://render.com/). Після чого в акаунті створи нову базу даних `PostgresSQL`, яку треба назвати `db-contacts`:
 
 ## Крок 2
-У файл `contactsServices.js` (знаходиться в папці `services`) скопіюй функції з файла `contacts.js` з домашнього завдання до модуля 1.
+Встанови графічний редактор `pgAdmin` для зручної роботи з базою даних для `PosgresSQL`. Підключися до створенної хмарної бази через графічній редактор та створи таблицю `contacts`.
 
 ## Крок 3
-Напиши контролери у файлі `contactsControllers.js` (знаходиться у папці controllers) з урахуванням наведених нижче вимог.
+Використовуй вихідний код домашньої работи #2 і заміни зберігання контактів з json-файлу на створену тобою базу даних.
+* Напиши код для створення підключення до `PosgresSQL` за допомогою `Sequelize`.
+* При успішному підключенні виведи в консоль повідомлення "Database connection successful".
+* Обов'язково обробив помилку підключення. Виведи в консоль повідомлення помилки і заверши процес використовуючи `process.exit(1)`.
+* У функціях обробки запитів заміни код CRUD-операцій над контактами з файлу, на Sequelize-методи для роботи з колекцією контактів в базі даних.
 
-REST API повинен підтримувати такі раути:
+## Крок 4
+У нас з'явилося в контактах додаткове поле статусу `favorite`, яке приймає логічне значення true або false. Воно відповідає за те, що в обраному чи ні знаходиться зазначений контакт. Потрібно реалізувати для оновлення статусу контакту новий роутер:
 
-`GET /api/contacts`
+`PATCH /api/contacts/:contactId/favorite`
 
-`GET /api/contacts/:id`
-
-`DELETE /api/contacts/:id`
-
-`POST /api/contacts`
-
-`PUT /api/contacts/:id`
-
+* Отримує параметр `contactId`
+* Отримує body в json-форматі c оновленням поля `favorite`
+* Якщо з body все добре, викликає функцію `updateStatusContact (contactId, body)` (напиши її) для поновлення контакту в базі
+* За результатом роботи функції повертає оновлений об'єкт контакту і статусом 200. В іншому випадку, повертає json з ключем `{"message":"Not found"}` і статусом `404`
 
 ## Вимоги
+* Створена БД за допомогою [Render](https://render.com/)
+* Підготовлений файл оточення `.env` за прикладом `.env_example`
 * Встановленний Node.js v.20
 * Встановлені залежності
 ```bash
-npm i
+yarn install
 ```
+* Запущений `pgAdmin` за допомогою docker-compose
+```bash
+docker compose up
+```
+* Налаштоване підключення в `pgAdmin` для `Render`
 
 ## Запуск
 ```bash
 node .\app.js
 ```
 
+## Postman
+доступні файли [колекції](/doc/postman/goit-node-rest-api.postman_collection.json) та [оточення](/doc/postman/local-contacts.postman_environment.json) для імпорту
+
+
+![postman](/doc/resources/image.png)
