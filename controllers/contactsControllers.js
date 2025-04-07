@@ -1,5 +1,5 @@
 import { contactsService } from "../services/contactsServices.js";
-import { NotFoundError } from "../helpers/errors.js";
+import { NotFoundError } from "../helpers/NotFoundError.js";
 
 const errorBody = (msg) => ({ message: msg });
 

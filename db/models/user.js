@@ -1,20 +1,8 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../connection.js";
-import crypto from "crypto";
+import { generateSecureRandomString } from "./ModelUtils.js";
 
-function generateSecureRandomString(length = 20) {
-  return crypto
-    .randomBytes(length)
-    .toString("base64")
-    .replace(/[^a-zA-Z0-9]/g, "") // remove non-standard characters
-    .slice(0, length);
-}
-
-function syncModels() {
-  return sequelize.sync({ alter: true });
-}
-
-class User extends Model {
+export class User extends Model {
   toJSON() {
     const values = { ...this.get() };
     delete values.password;
@@ -56,5 +44,3 @@ User.init(
     timestamps: true, // Enable timestamps
   }
 );
-
-export default { User, syncModels };

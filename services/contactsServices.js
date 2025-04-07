@@ -1,7 +1,7 @@
-import models from "../db/models/models.js";
+import { User } from "../db/models/user.js";
+import { NotFoundError } from "../helpers/NotFoundError.js";
+import { syncModels } from "../db/models/ModelUtils.js";
 
-const { User, syncModels } = models;
-import { NotFoundError } from "../helpers/errors.js";
 const notFoundError = new NotFoundError("Not found");
 const attributeList = ["id", "name", "email", "phone", "favorite"];
 
