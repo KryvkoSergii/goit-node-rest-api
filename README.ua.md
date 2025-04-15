@@ -9,7 +9,7 @@
 
 ## Крок 1
 У коді створити модель користувача для таблиці `users`
-```json
+```javascript
 {
   password: {
     type: DataTypes.STRING,
@@ -32,7 +32,7 @@
 }
 ```
 Змінити модель контактів, щоб кожен користувач бачив тільки свої контакти. Для цього в модель контактів додати властивість
-```json
+```javascript
    owner: {
       type: DataTypes.INTEGER,
       allowNull: false,
