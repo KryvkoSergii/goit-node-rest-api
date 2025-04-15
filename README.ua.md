@@ -71,7 +71,7 @@ ResponseBody: {
 ```
 
 #### Registration conflict error
-```json
+```javascript
 Status: 409 Conflict
 Content-Type: application/json
 ResponseBody: {
@@ -80,7 +80,7 @@ ResponseBody: {
 ```
 
 #### Registration success response
-```json
+```javascript
 Status: 201 Created
 Content-Type: application/json
 ResponseBody: {
@@ -102,7 +102,7 @@ ResponseBody: {
 Якщо пароль або імейл невірний, повернути Помилку Unauthorized.
 
 #### Login request
-```json
+```javascript
 POST /api/auth/login
 Content-Type: application/json
 RequestBody: {
@@ -112,7 +112,7 @@ RequestBody: {
 ```
 
 #### Login validation error
-```json
+```javascript
 Status: 400 Bad Request
 Content-Type: application/json
 ResponseBody: {
@@ -121,7 +121,7 @@ ResponseBody: {
 ```
 
 #### Login success response
-```json
+```javascript
 Status: 200 OK
 Content-Type: application/json
 ResponseBody: {
@@ -134,7 +134,7 @@ ResponseBody: {
 ```
 
 #### Login auth error
-```json
+```javascript
 Status: 401 Unauthorized
 ResponseBody: {
   "message": "Email or password is wrong"
@@ -153,7 +153,7 @@ ResponseBody: {
 Якщо користувача з таким id НЕ існує або токени не збігаються, повернути Помилку `Unauthorized`
 
 #### Middleware unauthorized error
-```json
+```javascript
 Status: 401 Unauthorized
 Content-Type: application/json
 ResponseBody: {
@@ -171,12 +171,12 @@ ResponseBody: {
 Якщо користувача не існує, повернути Помилку Unauthorized.
 В іншому випадку, видалити токен у поточного юзера і повернути Успішна відповідь.
 #### Logout request
-```json
+```javascript
 POST /api/auth/logout
 Authorization: "Bearer {{token}}"
 ```
 #### Logout unauthorized error
-```json
+```javascript
 Status: 401 Unauthorized
 Content-Type: application/json
 ResponseBody: {
@@ -184,7 +184,7 @@ ResponseBody: {
 }
 ```
 #### Logout success response
-```json
+```javascript
 Status: 204 No Content
 ```
 
@@ -198,13 +198,13 @@ Status: 204 No Content
 В іншому випадку повернути Успішну відповідь
 
 #### Current user request
-```json
+```javascript
 GET /api/auth/current
 Authorization: "Bearer {{token}}"
 ```
 
 #### Current user unauthorized error
-```json
+```javascript
 Status: 401 Unauthorized
 Content-Type: application/json
 ResponseBody: {
@@ -213,7 +213,7 @@ ResponseBody: {
 ```
 
 #### Current user success response
-```json
+```javascript
 Status: 200 OK
 Content-Type: application/json
 ResponseBody: {

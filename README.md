@@ -53,42 +53,42 @@ If the email is already being used by someone else, return a `Conflict` Error.
 Otherwise, return a Successful response.
 
 #### Registration request
-```json
+```javascript
 POST /api/auth/register
 Content-Type: application/json
 RequestBody: {
-"email": "example@example.com",
-"password": "examplepassword"
+  "email": "example@example.com",
+  "password": "examplepassword"
 }
 ```
 
 #### Registration validation error
-```json
+```javascript
 Status: 400 Bad Request
 Content-Type: application/json
 ResponseBody: {
-"message": "Error from Joi or other validation library"
+    "message": "Error from Joi or other validation library"
 }
 ```
 
 #### Registration conflict error
-```json
+```javascript
 Status: 409 Conflict
 Content-Type: application/json
 ResponseBody: {
-"message": "Email in use"
+  "message": "Email in use"
 }
 ```
 
 #### Registration success response
-```json
+```javascript
 Status: 201 Created
 Content-Type: application/json
 ResponseBody: {
-"user": {
-"email": "example@example.com",
-"subscription": "starter"
-}
+  "user": {
+    "email": "example@example.com",
+    "subscription": "starter"
+  }
 }
 ```
 
@@ -104,42 +104,42 @@ Otherwise, compare the password for the found user, if the passwords match, crea
 If the password or email is incorrect, return an Unauthorized Error.
 
 #### Login request
-```json
+```javascript
 POST /api/auth/login
 Content-Type: application/json
 RequestBody: {
- "email": "example@example.com",
- "password": "examplepassword"
+  "email": "example@example.com",
+  "password": "examplepassword"
 }
 ```
 
 #### Login validation error
-```json
+```javascript
 Status: 400 Bad Request
 Content-Type: application/json
 ResponseBody: {
- "message": "Error from Joi or other validation library"
+  "message": "Error from Joi or other validation library"
 }
 ```
 
 #### Login success response
-```json
+```javascript
 Status: 200 OK
 Content-Type: application/json
 ResponseBody: {
- "token": "exampletoken",
- "user": {
- "email": "example@example.com",
- "subscription": "starter"
- }
+  "token": "exampletoken",
+  "user": {
+    "email": "example@example.com",
+    "subscription": "starter"
+  }
 }
 ```
 
 #### Login auth error
-```json
+```javascript
 Status: 401 Unauthorized
 ResponseBody: {
- "message": "Email or password is wrong"
+  "message": "Email or password is wrong"
 }
 ```
 
@@ -155,11 +155,11 @@ If the user exists and the token matches the one in the database, write their da
 If the user with this id does NOT exist or the tokens do not match, return an `Unauthorized` Error
 
 #### Middleware unauthorized error
-```json
+```javascript
 Status: 401 Unauthorized
 Content-Type: application/json
 ResponseBody: {
-"message": "Not authorized"
+  "message": "Not authorized"
 }
 ```
 
@@ -173,20 +173,20 @@ In the User model, find the user by id.
 If the user does not exist, return an Unauthorized Error.
 Otherwise, remove the token from the current user and return a Successful response.
 #### Logout request
-```json
+```javascript
 POST /api/auth/logout
 Authorization: "Bearer {{token}}"
 ```
 #### Logout unauthorized error
-```json
+```javascript
 Status: 401 Unauthorized
 Content-Type: application/json
 ResponseBody: {
-"message": "Not authorized"
+  "message": "Not authorized"
 }
 ```
 #### Logout success response
-```json
+```javascript
 Status: 204 No Content
 ```
 
@@ -200,27 +200,27 @@ If the user does not exist, return an `Unauthorized` Error
 Otherwise return a Success response
 
 #### Current user request
-```json
+```javascript
 GET /api/auth/current
 Authorization: "Bearer {{token}}"
 ```
 
 #### Current user unauthorized error
-```json
+```javascript
 Status: 401 Unauthorized
 Content-Type: application/json
 ResponseBody: {
-"message": "Not authorized"
+  "message": "Not authorized"
 }
 ```
 
 #### Current user success response
-```json
+```javascript
 Status: 200 OK
 Content-Type: application/json
 ResponseBody: {
-"email": "example@example.com",
-"subscription": "starter"
+  "email": "example@example.com",
+  "subscription": "starter"
 }
 ```
 
