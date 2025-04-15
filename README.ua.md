@@ -36,7 +36,7 @@
    owner: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      }
+    }
 ```
 
 ## Крок 2
@@ -52,7 +52,7 @@
 В іншому випадку повернути Успішна відповідь.
 
 #### Registration request
-```json
+```javascript
 POST /api/auth/register
 Content-Type: application/json
 RequestBody: {
@@ -62,7 +62,7 @@ RequestBody: {
 ```
 
 #### Registration validation error
-```json
+```javascript
 Status: 400 Bad Request
 Content-Type: application/json
 ResponseBody: {

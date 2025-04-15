@@ -9,34 +9,34 @@ Continue creating a REST API to work with the contacts collection. Add user auth
 
 ## Step 1
 In the code, create a user model for the `users` table
-```
+```javascript
 {
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    email: {
-        type: DataTypes.STRING,
-allowNull: false,
-unique: true,
-},
-subscription: {
-type: DataTypes.ENUM,
-values: ["starter", "pro", "business"],
-defaultValue: "starter"
-},
-token: {
-type: DataTypes.STRING,
-defaultValue: null,
-},
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  subscription: {
+      type: DataTypes.ENUM,
+      values: ["starter", "pro", "business"],
+      defaultValue: "starter"
+  },
+  token: {
+    type: DataTypes.STRING,
+    defaultValue: null,
+  },
 }
 ```
 Change the contact model so that each user can only see their own contacts. To do this, add the property
-```json
-owner: {
-type: DataTypes.INTEGER,
-allowNull: false,
-}
+```javascript
+   owner: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    }
 ```
 
 ## Step 2
