@@ -1,10 +1,17 @@
+import { DataTypes, Model } from "sequelize";
 import sequelize from "../connection.js";
 import { generateSecureRandomString } from "./ModelUtils.js";
-import { DataTypes, Model } from "sequelize";
 
-export class User extends Model {}
+export class Contact extends Model {
+  toJSON() {
+    const values = { ...this.get() };
+    delete values.createdAt;
+    delete values.updatedAt;
+    return values;
+  }
+}
 
-User.init(
+Contact.init(
   {
     id: {
       type: DataTypes.STRING,
@@ -12,32 +19,30 @@ User.init(
       allowNull: false,
       defaultValue: () => generateSecureRandomString(),
     },
-    password: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: {
-        name: "users_email_key", // Custom name for the unique constraint
-        msg: "Email in use", // Custom error message
-      },
-      collate: "utf8_general_ci", // Case-insensitive collation
     },
-    subscription: {
-      type: DataTypes.ENUM,
-      values: ["starter", "pro", "business"],
-      defaultValue: "starter",
-    },
-    token: {
+    phone: {
       type: DataTypes.STRING,
-      defaultValue: null,
+      allowNull: false,
     },
+    favorite: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    owner: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
   },
   {
-    tableName: "users",
-    modelName: "User",
+    tableName: "contacts",
+    modelName: "Contact",
     sequelize, // We need to pass the connection instance
     timestamps: true, // Enable timestamps
   }

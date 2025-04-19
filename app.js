@@ -3,6 +3,11 @@ import morgan from "morgan";
 import cors from "cors";
 
 import contactsRouter from "./routes/contactsRouter.js";
+import authRouter from "./routes/authRouter.js";
+import { passportConfig } from "./middleware/passportConfig.js";
+import { syncModels } from "./db/models/ModelUtils.js";
+
+syncModels();
 
 const app = express();
 
@@ -10,6 +15,9 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 app.use("/api/contacts", contactsRouter);
+app.use("/api/auth", authRouter);
+
+app.use(passportConfig.initialize());
 
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });

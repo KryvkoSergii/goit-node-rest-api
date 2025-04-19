@@ -1,0 +1,386 @@
+{
+	"info": {
+		"_postman_id": "ab8e9470-4ec2-4860-938d-c5f831ffea72",
+		"name": "goit-node-rest-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43595493",
+		"_collection_link": "https://sergii-4137244.postman.co/workspace/e661cff9-3a28-4867-9373-1ae347271d6d/collection/43595493-ab8e9470-4ec2-4860-938d-c5f831ffea72?action=share&source=collection_link&creator=43595493"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"some_user_8@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}{{auth}}/register",
+							"host": [
+								"{{host}}{{auth}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Отримати токен з відповіді\r",
+									"const token = pm.response.json().token;\r",
+									"\r",
+									"const arrayToken = token.split('.');\r",
+									"const tokenPayload = JSON.parse(atob(arrayToken[1]));\r",
+									"\r",
+									"// Записати токен у змінну середовища\r",
+									"pm.environment.set(\"authToken\", token);\r",
+									"pm.environment.set(\"userEmail\", tokenPayload['email'])"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"some_user@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}{{auth}}/login",
+							"host": [
+								"{{host}}{{auth}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}{{auth}}/current",
+							"host": [
+								"{{host}}{{auth}}"
+							],
+							"path": [
+								"current"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{host}}{{auth}}/logout",
+							"host": [
+								"{{host}}{{auth}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "subscription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"{{userEmail}}\",\r\n    \"subscription\": \"pro\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}{{auth}}/subscription",
+							"host": [
+								"{{host}}{{auth}}"
+							],
+							"path": [
+								"subscription"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "get contacts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{base_path}}?page=1&limit=10&favorite=false",
+					"host": [
+						"{{host}}{{base_path}}"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "favorite",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get contact by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{base_path}}/eGEOLAD6auXjhokEOV7l",
+					"host": [
+						"{{host}}{{base_path}}"
+					],
+					"path": [
+						"eGEOLAD6auXjhokEOV7l"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{base_path}}/p97HuScN0FzyAHJJPHdF",
+					"host": [
+						"{{host}}{{base_path}}"
+					],
+					"path": [
+						"p97HuScN0FzyAHJJPHdF"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Andrei\",\r\n    \"email\": \"andrei@gmail.com\",\r\n    \"phone\": \"+38 067 000 00 00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{base_path}}",
+					"host": [
+						"{{host}}{{base_path}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Alex\",\r\n    \"email\": \"andrei@gmail.com\",\r\n    \"phone\": \"+38 067 111 00 00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{base_path}}/R7ha3zLH8mdHxif9l41L",
+					"host": [
+						"{{host}}{{base_path}}"
+					],
+					"path": [
+						"R7ha3zLH8mdHxif9l41L"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "make_favorite",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"favorite\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}{{base_path}}/R7ha3zLH8mdHxif9l41L/favorite",
+					"host": [
+						"{{host}}{{base_path}}"
+					],
+					"path": [
+						"R7ha3zLH8mdHxif9l41L",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
