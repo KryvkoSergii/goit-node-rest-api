@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../connection.js";
-import { generateSecureRandomString } from "./modelUtils.js";
+import { generateSecureRandomString } from "./ModelUtils.js";
 
 export class Contact extends Model {
   toJSON() {

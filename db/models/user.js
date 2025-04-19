@@ -1,5 +1,5 @@
 import sequelize from "../connection.js";
-import { generateSecureRandomString } from "./modelUtils.js";
+import { generateSecureRandomString } from "./ModelUtils.js";
 import { DataTypes, Model } from "sequelize";
 
 export class User extends Model {}

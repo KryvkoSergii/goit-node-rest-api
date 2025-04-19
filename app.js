@@ -5,7 +5,7 @@ import cors from "cors";
 import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
 import { passportConfig } from "./middleware/passportConfig.js";
-import { syncModels } from "./db/models/modelUtils.js";
+import { syncModels } from "./db/models/ModelUtils.js";
 
 syncModels();
 
