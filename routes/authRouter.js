@@ -33,6 +33,6 @@ authRouter.patch(
   changeUserSubscription
 );
 
-authRouter.patch("/upload", passportConfig.authenticate, upload.single("avatar"), updateAvatar);
+authRouter.patch("/avatars", passportConfig.authenticate, upload.single("avatar"), updateAvatar);
 
 export default authRouter;
