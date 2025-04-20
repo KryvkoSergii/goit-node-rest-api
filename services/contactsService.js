@@ -33,8 +33,6 @@ async function getEntityById(contactId) {
 
 async function getContactById(contactId) {
   return await getEntityById(contactId).then((contact) => {
-    console.error(`contact = ${contact}`);
-
     if (!contact) {
       throw notFoundError;
     }
@@ -68,13 +66,6 @@ async function addContact(name, email, phone, userId) {
 
 async function updateContact(id, name, email, phone, userId) {
   return await getEntityById(id).then((contact) => {
-    if (!contact) {
-      throw notFoundError;
-    }
-
-    console.log(`contact.owner = ${contact.owner}`);
-    console.log(`userId = ${userId}`);
-
     if (contact.owner !== userId) {
       throw forbiddenOperationError;
     }
@@ -99,10 +90,6 @@ async function updateContact(id, name, email, phone, userId) {
 
 async function updateStatusContact(id, favorite, userId) {
   return await getEntityById(id).then((contact) => {
-    if (!contact) {
-      throw notFoundError;
-    }
-
     if (contact.owner !== userId) {
       throw forbiddenOperationError;
     }
