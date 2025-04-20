@@ -8,12 +8,16 @@ Continue creating a REST API for working with the contact collection. Add the ab
 
 ## Step 1
 Create a folder `public` for static distribution. In this folder, create a folder avatars.
+
 Configure Express to distribute static files from the `public` folder.
+
 Put any image in the `public/avatars` folder and check that static distribution works.
+
 When you navigate to such a URL, the browser will display the image. Shell `http://localhost:<port>/avatars/<filename with extension>`
 
 ## Step 2
 Add a new property avatarURL to the user schema to store the image.
+
 Use the `gravatar` package to generate an avatar for a new user using their email address when they register.
 
 ## Step 3
@@ -43,7 +47,9 @@ ResponseBody: {
 }
 ```
 Create a `temp` folder in the root of the project and save the uploaded avatar in it.
+
 Move the user avatar from the temp folder to the `public/avatars` folder and give it a unique name for the specific user.
+
 The resulting URL `/avatars/<filename with extension>` and save it in the user avatarURL field
 
 ## Step 4
