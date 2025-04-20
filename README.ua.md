@@ -73,9 +73,44 @@ docker compose up
 
 ## Запуск
 ```bash
-node .\app.js
+yarn start dev
 ```
 
+## Запуск тестів
+```bash
+yarn test
+```
+### Результат:
+```bash
+yarn run v1.22.22
+$ jest
+ PASS  controllers/authController.test.js
+  loginUser
+    √ should return 200 and user data on successful login (4 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        1.051 s
+Ran all test suites.
+Done in 1.80s.
+```
+
+## Запуск в Docker контейнері
+```bash
+docker compose .\docker-compose-app.yml up
+```
+
+## Опублікувати в dockerhub  
+### Увійти
+```bash
+docker login -u user -p password
+```
+### Опублікувати
+```bash
+docker tag goit-node-rest-api-app:latest <repo>/goit-node-rest-api-app:<tag>
+``` 
+ 
 ## Postman
 доступні файли [колекції](/doc/postman/goit-node-rest-api-v3.postman_collection) та [оточення](/doc/postman/local-contacts-v3.postman_environment) для імпорту
 

@@ -72,7 +72,42 @@ docker compose up
 
 ## Running
 ```bash
-node .\app.js
+yarn start dev
+```
+
+## Run test
+```bash
+yarn test
+```
+### Observe result like:
+```bash
+yarn run v1.22.22
+$ jest
+ PASS  controllers/authController.test.js
+  loginUser
+    √ should return 200 and user data on successful login (4 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        1.051 s
+Ran all test suites.
+Done in 1.80s.
+```
+
+## Run in Docker container
+```bash
+docker compose .\docker-compose-app.yml up
+```
+
+## Publish to dockerhub
+### Login
+```bash
+docker login -u user -p password
+```
+### Publish
+```bash
+docker tag goit-node-rest-api-app:latest <repo>/goit-node-rest-api-app:<tag>
 ```
 
 ## Postman
