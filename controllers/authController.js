@@ -4,6 +4,7 @@ import { EmailAlreadyExistsError } from "../helpers/EmailAlreadyExistsError.js";
 import { passwordService } from "../services/passwordService.js";
 import jwt from "jsonwebtoken";
 import { errorBody, userObject } from "./responseModels.js";
+import { retriveAvatarUrlForNewUser, moveFileToNewDestination, removeFile } from "../services/fileService.js";
 
 function handleError(res, err) {
   if (err instanceof NotFoundError) {
@@ -13,6 +14,14 @@ function handleError(res, err) {
   } else {
     return res.status(500).json(errorBody(err.message));
   }
+}
+
+function getBaseUrl(req) {
+  return `${req.protocol}://${req.get('host')}`
+}
+
+function buildAvatarUrl(req, relativePath) {
+  return `${getBaseUrl(req)}${relativePath}`;
 }
 
 export const loginUser = async (req, res) => {
@@ -42,7 +51,7 @@ export const loginUser = async (req, res) => {
     await usersService.update(email, null, token);
     return res.status(200).json({
       token: token,
-      user: userObject(usr.email, usr.subscription),
+      user: userObject(usr.email, usr.subscription, buildAvatarUrl(req, usr.avatarURL)),
     });
   } catch (err) {
     handleError(res, err);
@@ -56,14 +65,16 @@ export const logoutUser = (req, res) => {
     .catch((err) => handleError(res, err));
 };
 
-export const registerUser = (req, res) => {
+export const registerUser = async (req, res) => {
   const email = req.body.email;
   const plainPassword = req.body.password;
 
+  const relativePath = await retriveAvatarUrlForNewUser(email);
+
   usersService
-    .create(email, plainPassword)
+    .create(email, plainPassword, relativePath)
     .then((usr) =>
-      res.status(201).json({ user: userObject(usr.email, usr.subscription) })
+      res.status(201).json({ user: userObject(usr.email, usr.subscription, buildAvatarUrl(req, usr.avatarURL)) })
     )
     .catch((err) => handleError(res, err));
 };
@@ -71,7 +82,7 @@ export const registerUser = (req, res) => {
 export const currentUser = (req, res) => {
   // getting user from request object context
   const usr = req.user;
-  res.status(201).json(userObject(usr.email, usr.subscription));
+  res.status(201).json(userObject(usr.email, usr.subscription, buildAvatarUrl(req, usr.avatarURL)));
 };
 
 export const changeUserSubscription = (req, res) => {
@@ -84,7 +95,32 @@ export const changeUserSubscription = (req, res) => {
   usersService
     .update(usr.email, subscription)
     .then((usr) =>
-      res.status(200).json(userObject(usr.email, usr.subscription))
+      res.status(200).json(userObject(usr.email, usr.subscription, buildAvatarUrl(req, usr.avatarURL)))
     )
     .catch((err) => handleError(res, err));
 };
+
+export const updateAvatar = async (req, res, next) => {
+  const user = req.user;
+  const { path: temporaryName } = req.file;
+
+  const newPath = await moveFileToNewDestination(temporaryName)
+    .then((fileName) => {
+      return fileName;
+    })
+    .catch((err) => {
+      fs.unlink(temporaryName, (err) => {
+        if (err) {
+          return next(err);
+        }
+      });
+      return next(err);
+    });
+
+  usersService.updateAvatar(user.id, newPath)
+    .then((usr) => { 
+      removeFile(user.avatarURL).catch((err) => next(err));
+      res.status(200).json(userObject(usr.email, usr.subscription, buildAvatarUrl(req, usr.avatarURL))); })
+    .catch((err) => handleError(res, err));
+};
+

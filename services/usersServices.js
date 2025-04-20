@@ -1,5 +1,5 @@
 import { User } from "../db/models/User.js";
-const attributeList = ["id", "email", "subscription", "token", "password"];
+const attributeList = ["id", "email", "subscription", "token", "password", "avatarURL"];
 import { NotFoundError } from "../helpers/NotFoundError.js";
 import { EmailAlreadyExistsError } from "../helpers/EmailAlreadyExistsError.js";
 import { passwordService } from "./passwordService.js";
@@ -34,16 +34,18 @@ async function getByEmailInner(email) {
   });
 }
 
-async function create(email, password) {
+async function create(email, password, avatarUrl) {
   const existingUser = await getByEmailInner(email);
   if (existingUser) {
     throw new EmailAlreadyExistsError("Email in use");
   }
   const hashedPassword = await passwordService.getHashedPassword(password);
+
   return await User.create({
     email,
     password: hashedPassword,
     subscription: defaultSubscription,
+    avatarURL: avatarUrl,
   });
 }
 
@@ -68,10 +70,18 @@ async function removeTokenFromUser(id) {
   });
 }
 
+async function updateAvatar(id, avatarUrl) {
+  return await getById(id).then((user) => {
+    user.avatarURL = avatarUrl;
+    return user.save();
+  });
+}
+
 export const usersService = {
   getById,
   getByEmail,
   create,
   update,
   removeTokenFromUser,
+  updateAvatar,
 };
