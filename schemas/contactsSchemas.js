@@ -14,13 +14,15 @@ const phonePattern =  new RegExp("^\\+?[\\d\\s\\-()]{10,20}$");
 export const createContactSchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
     email: Joi.string().email().required(),
-    phone: Joi.string().regex(phonePattern).optional()
+    phone: Joi.string().regex(phonePattern).optional(),
+    favorite: Joi.boolean().optional(),
 })
 
 export const updateContactSchema = Joi.object({
     name: Joi.string().min(3).max(30).optional(),
     email: Joi.string().email().optional(),
-    phone: Joi.string().regex(phonePattern).optional()
+    phone: Joi.string().regex(phonePattern).optional(),
+    favorite: Joi.boolean().optional(),
 })
 
 export const favoriteContactSchema = Joi.object({

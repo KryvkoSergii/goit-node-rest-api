@@ -53,7 +53,7 @@ export const createContact = (req, res) => {
   const usr = req.user;
 
   contactsService
-    .addContact(req.body.name, req.body.email, req.body.phone, usr.id)
+    .addContact(req.body.name, req.body.email, req.body.phone, req.body.favorite, usr.id)
     .then((data) => handleSuccess(res, data))
     .catch((err) => handleError(res, err));
 };
@@ -63,10 +63,11 @@ export const updateContact = (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
   const phone = req.body.phone;
+  const favorite = req.body.favorite;
   const usr = req.user;
 
   contactsService
-    .updateContact(id, name, email, phone, usr.id)
+    .updateContact(id, name, email, phone, favorite, usr.id)
     .then((data) => handleSuccess(res, data))
     .catch((err) => handleError(res, err));
 };

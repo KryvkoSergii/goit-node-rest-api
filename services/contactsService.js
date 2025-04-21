@@ -56,33 +56,29 @@ async function removeContact(contactId, userId) {
   return toResponse(entry);
 }
 
-async function addContact(name, email, phone, userId) {
+async function addContact(name, email, phone, favorite, userId) {
   const contact = await Contact.create({
     name,
     email,
     phone,
     owner: userId,
+    favorite: favorite,
   });
   return toResponse(contact);
 }
 
-async function updateContact(id, name, email, phone, userId) {
-  return await getEntityById(id).then((contact) => {
+async function updateContact(id, name, email, phone, favorite, userId) {
+  return await getEntityById(id, userId).then((contact) => {
     if (contact.owner !== userId) {
       throw forbiddenOperationError;
     }
 
-    if (name) {
-      contact.name = name;
-    }
-
-    if (email) {
-      contact.email = email;
-    }
-
-    if (phone) {
-      contact.phone = phone;
-    }
+    Object.assign(contact, {
+      ...(name !== undefined && { name }),
+      ...(email !== undefined && { email }),
+      ...(phone !== undefined && { phone }),
+      ...(favorite !== undefined && { favorite }),
+    });
 
     return contact.save().then(() => {
       return toResponse(contact);
@@ -91,7 +87,7 @@ async function updateContact(id, name, email, phone, userId) {
 }
 
 async function updateStatusContact(id, favorite, userId) {
-  return await getEntityById(id).then((contact) => {
+  return await getEntityById(id, userId).then((contact) => {
     if (contact.owner !== userId) {
       throw forbiddenOperationError;
     }
