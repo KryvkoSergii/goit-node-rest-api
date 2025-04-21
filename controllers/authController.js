@@ -106,20 +106,24 @@ export const updateAvatar = async (req, res, next) => {
 
   const newPath = await moveFileToNewDestination(temporaryName)
     .then((fileName) => {
+      console.log("fragment 1");
       return fileName;
     })
     .catch((err) => {
+      console.log("fragment 2");
       fs.unlink(temporaryName, (err) => {
         if (err) {
+          console.log("fragment 3");
           return next(err);
         }
       });
+      console.log("fragment 4");
       return next(err);
     });
-
+  console.log("fragment 5");
   usersService.updateAvatar(user.id, newPath)
-    .then((usr) => { 
-      removeFile(user.avatarURL).catch((err) => next(err));
+    .then((usr) => {
+      removeFile(user.avatarURL).catch((err) => console.log(err));
       res.status(200).json(userObject(usr.email, usr.subscription, buildAvatarUrl(req, usr.avatarURL))); })
     .catch((err) => handleError(res, err));
 };
