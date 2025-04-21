@@ -71,7 +71,7 @@ export const registerUser = (req, res) => {
 export const currentUser = (req, res) => {
   // getting user from request object context
   const usr = req.user;
-  res.status(201).json(userObject(usr.email, usr.subscription));
+  res.status(200).json(userObject(usr.email, usr.subscription));
 };
 
 export const changeUserSubscription = (req, res) => {

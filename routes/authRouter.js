@@ -22,7 +22,7 @@ authRouter.post("/login", validateBody(loginUserSchema), loginUser);
 
 authRouter.post("/logout", passportConfig.authenticate, logoutUser);
 
-authRouter.post("/current", passportConfig.authenticate, currentUser);
+authRouter.get("/current", passportConfig.authenticate, currentUser);
 
 authRouter.patch(
   "/subscription",
