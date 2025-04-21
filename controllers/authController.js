@@ -4,7 +4,7 @@ import { EmailAlreadyExistsError } from "../helpers/EmailAlreadyExistsError.js";
 import { passwordService } from "../services/passwordService.js";
 import jwt from "jsonwebtoken";
 import { errorBody, userObject } from "./responseModels.js";
-import { retriveAvatarUrlForNewUser, moveFileToNewDestination, removeFile } from "../services/fileService.js";
+import { retrieveAvatarUrlForNewUser, moveFileToNewDestination, removeFile } from "../services/fileService.js";
 
 function handleError(res, err) {
   if (err instanceof NotFoundError) {
@@ -21,7 +21,7 @@ function getBaseUrl(req) {
 }
 
 function buildAvatarUrl(req, relativePath) {
-  return `${getBaseUrl(req)}${relativePath}`;
+  return relativePath ? `${getBaseUrl(req)}${relativePath}` : null;
 }
 
 export const loginUser = async (req, res) => {
@@ -69,7 +69,7 @@ export const registerUser = async (req, res) => {
   const email = req.body.email;
   const plainPassword = req.body.password;
 
-  const relativePath = await retriveAvatarUrlForNewUser(email);
+  const relativePath = await retrieveAvatarUrlForNewUser(email);
 
   usersService
     .create(email, plainPassword, relativePath)
