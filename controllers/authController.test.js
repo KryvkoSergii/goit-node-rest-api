@@ -7,11 +7,15 @@ jest.mock("../db/models/User.js", () => ({
     init: jest.fn(),
   },
 }));
+jest.mock("../helpers/fileValidator.js", () => ({
+  ensureDirExists : jest.fn().mockReturnValue("./temp"),
+}))
 
 import { loginUser } from "./authController.js";
 import { usersService } from "../services/usersServices.js";
 import { passwordService } from "../services/passwordService.js";
 import jwt from "jsonwebtoken";
+import {ensureDirExists} from "../helpers/fileValidator.js";
 
 describe("loginUser", () => {
 

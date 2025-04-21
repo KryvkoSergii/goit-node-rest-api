@@ -2,14 +2,10 @@ import gravatar from "gravatar";
 import axios from "axios";
 import fs from "fs";
 import crypto from "crypto";
-import path from "path";
-import {fileURLToPath} from "url";
+import {ensureDirExists} from "../helpers/fileValidator.js";
 
 export const PUBLIC_DIR = "public";
-const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const storeDir = path.join(__dirname, PUBLIC_DIR, process.env.AVATARS_DIR);
-
-ensureDirExists(storeDir);
+ensureDirExists(PUBLIC_DIR, process.env.AVATARS_DIR);
 
 function retrieveAvatarUrl(email, size = 200) {
     const url = gravatar.url(email, {
@@ -75,10 +71,4 @@ export function removeFile(filePath) {
             resolve();
         }
     });
-}
-
-export function ensureDirExists(filePath) {
-    if (!fs.existsSync(filePath)) {
-        fs.mkdirSync(filePath, {recursive: true});
-    }
 }

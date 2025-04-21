@@ -1,12 +1,7 @@
 import multer from "multer";
-import path from "path";
-import { fileURLToPath } from 'url';
-import {ensureDirExists} from "../services/fileService.js"
+import {ensureDirExists} from "../helpers/fileValidator.js";
 
-const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const tempDir = path.join(__dirname, process.env.TEMP_DIR);
-
-ensureDirExists(tempDir);
+const tempDir = ensureDirExists(process.env.TEMP_DIR);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
