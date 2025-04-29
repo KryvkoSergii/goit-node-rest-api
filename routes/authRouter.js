@@ -5,6 +5,7 @@ import {
   logoutUser,
   currentUser,
   changeUserSubscription,
+  updateAvatar,
 } from "../controllers/authController.js";
 import validateBody from "../helpers/validateBody.js";
 import {
@@ -13,6 +14,8 @@ import {
   subscriptionUserSchema,
 } from "../schemas/usersSchemas.js";
 import { passportConfig } from "../middleware/passportConfig.js";
+import { upload } from "../middleware/fileUploadConfig.js";
+import isEmptyBody from "../middleware/bodyValidator.js";
 
 const authRouter = express.Router();
 
@@ -30,5 +33,7 @@ authRouter.patch(
   passportConfig.authenticate,
   changeUserSubscription
 );
+
+authRouter.patch("/avatars", passportConfig.authenticate, isEmptyBody, upload.single("avatar"), updateAvatar);
 
 export default authRouter;

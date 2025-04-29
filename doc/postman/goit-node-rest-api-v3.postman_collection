@@ -4,7 +4,7 @@
 		"name": "goit-node-rest-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "43595493",
-		"_collection_link": "https://sergii-4137244.postman.co/workspace/e661cff9-3a28-4867-9373-1ae347271d6d/collection/43595493-ab8e9470-4ec2-4860-938d-c5f831ffea72?action=share&source=collection_link&creator=43595493"
+		"_collection_link": "https://sergii-4137244.postman.co/workspace/GOIT~e661cff9-3a28-4867-9373-1ae347271d6d/collection/43595493-ab8e9470-4ec2-4860-938d-c5f831ffea72?action=share&source=collection_link&creator=43595493"
 	},
 	"item": [
 		{
@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"some_user_8@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"some_user_avatar_4@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -73,7 +73,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"some_user@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"some_user_avatar_4@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -177,6 +177,43 @@
 							],
 							"path": [
 								"subscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "avatar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/C:/Users/Сергій/Downloads/images.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}{{auth}}/avatars",
+							"host": [
+								"{{host}}{{auth}}"
+							],
+							"path": [
+								"avatars"
 							]
 						}
 					},

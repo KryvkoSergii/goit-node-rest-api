@@ -6,6 +6,11 @@ import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
 import { passportConfig } from "./middleware/passportConfig.js";
 import { syncModels } from "./db/models/ModelUtils.js";
+import { PUBLIC_DIR } from "./services/fileService.js";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 syncModels();
 
@@ -14,6 +19,7 @@ const app = express();
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
+app.use(`/${PUBLIC_DIR}`, express.static(path.join(__dirname, PUBLIC_DIR)));
 app.use("/api/contacts", contactsRouter);
 app.use("/api/auth", authRouter);
 
