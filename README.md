@@ -1,66 +1,112 @@
-# Working with files and testing applications
+# Email send
 
 - [Українська](README.ua.md)
 
-Create a branch `hw05-avatars` from the master branch.
+Create a branch `hw06-email` from the `master` branch.
 
-Continue creating a REST API for working with the contact collection. Add the ability to upload a user avatar via [Multer](https://www.npmjs.com/package/multer) .
+## How the verification process should work
+
+* After registration, the user should receive an email to the email address specified during registration with a link to verify their email
+* After following the link in the received email for the first time, the user should receive a Response with status 200, which will mean successful email verification
+* After following the link again, the user should receive an Error with status 404
 
 ## Step 1
-Create a folder `public` for static distribution. In this folder, create a folder avatars.
+Creating an endpoint for email verification
 
-Configure Express to distribute static files from the `public` folder.
+1. Add two fields `verificationToken` and `verify` to the `User` model. The value of the `verify` field equal to `false` will mean that his `email` has not yet been verified
 
-Put any image in the `public/avatars` folder and check that static distribution works.
+2. Create an endpoint `GET /auth/verify/:verificationToken(# verification-request)`, where we will search for the user in the User model by the `verificationToken` parameter
 
-When you navigate to such a URL, the browser will display the image. Shell `http://localhost:<port>/avatars/<filename with extension>`
+* If the user with such a token is not found, it is necessary to return the `'Not Found'' Error
 
-## Step 2
-Add a new property avatarURL to the user schema to store the image.
+* If the user is found, we set `verificationToken` to `null`, and set the verify field to true in the user document and return a Successful response
 
-Use the `gravatar` package to generate an avatar for a new user using their email address when they register.
-
-## Step 3
-
-When registering a user:
-* Create a link to the user's avatar using gravatar
-* Save the resulting URL in the avatarURL field when creating a user
-
+Verification request
 ```javascript
-PATCH /auth/avatars
-Content-Type: multipart/form-data
-Authorization: "Bearer {{token}}"
-RequestBody: uploaded file
+GET /auth/verify/:verificationToken
+```
 
-# Successful response
-Status: 200 OK
-Content-Type: application/json
+Verification user Not Found
+```javascript
+Status: 404 Not Found
 ResponseBody: {
-"avatarURL": "here will be a link to the image"
+message: 'User not found'
 }
+````
 
-# Unsuccessful response
-Status: 401 Unauthorized
-Content-Type: application/json
+Verification success response
+```javascript
+Status: 200 OK
 ResponseBody: {
-"message": "Not authorized"
+message: 'Verification successful',
 }
 ```
-Create a `temp` folder in the root of the project and save the uploaded avatar in it.
 
-Move the user avatar from the temp folder to the `public/avatars` folder and give it a unique name for the specific user.
+## Step 3
+Adding sending an `email` to the user with a link for verification
 
-The resulting URL `/avatars/<filename with extension>` and save it in the user avatarURL field
+When creating a user during registration:
+
+* Create a `verificationToken` for the user and write it to the database (to generate a token, use the `uuid` or `nanoid` package)
+* Send an `email` to the user's email and specify the link for verifying the `email` (`/auth/verify/:verificationToken`) in the message
+* It is also necessary to take into account that now the user's login is not allowed if the email is not verified
 
 ## Step 4
-Add the ability to update the avatar by creating the `/auth/avatars` endpoint and using the PATCH method.
 
-## Additional task (optional)
-Write `unit tests` for the login controller using Jest:
+Adding re-sending an email to the user with a link for verification
 
-the response should have a status code `200`
-* the response should return a token
-* the response should return a user object with 2 fields `email` and `subscription` with data type `String`
+It is necessary to provide for the option that the user may accidentally delete the letter. It may not reach the recipient for some reason. Our email sending service gave an error during registration, etc.
+
+`POST /auth/verify`
+
+Receives body in `{email}` format
+
+If there is no required field `email` in body, returns json with key `{"message":"missing required field email"}` and status 400
+
+If everything is fine with body, resend the email with `verificationToken` to the specified email, but only if the user is not verified
+
+If the user has already passed verification, send json with key `{"message":"Verification has already been passed"}` with status `400 Bad Request`
+
+Resending an email request
+
+```javascript
+POST /auth/verify
+Content-Type: application/json
+RequestBody: {
+"email": "example@example.com"
+}
+````
+
+Resending an email validation error
+
+```javascript
+Status: 400 Bad Request
+Content-Type: application/json
+ResponseBody: {
+"message": "Error from Joi or other library validation"
+}
+```
+
+Resending an email success response
+
+```javascript
+Status: 200 Ok
+Content-Type: application/json
+ResponseBody: { 
+"message": "Verification email sent"
+}
+```
+
+Resend email for verified user
+
+```javascript
+Status: 400 Bad Request
+Content-Type: application/json
+ResponseBody: { 
+message: "Verification has already been passed"
+}
+```
+
 
 ## Prerequisites
 * Created a database using [Render](https://render.com/)
@@ -117,6 +163,6 @@ docker tag goit-node-rest-api-app:latest <repo>/goit-node-rest-api-app:<tag>
 ```
 
 ## Postman
-available [collection](/doc/postman/goit-node-rest-api-v3.postman_collection) and [environment](/doc/postman/local-contacts-v3.postman_environment) files for import
+available [collection](/doc/postman/goit-node-rest-api-v4.postman_collection) and [environment](/doc/postman/local-contacts-v3.postman_environment) files for import
 
 ![postman](/doc/resources/image.png)

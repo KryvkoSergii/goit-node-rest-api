@@ -17,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"some_user_avatar_4@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"someuser@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -73,7 +73,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"some_user_avatar_4@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
+							"raw": "{\r\n    \"email\": \"someuser@gmail.com\",\r\n    \"password\": \"my_password\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -214,6 +214,32 @@
 							],
 							"path": [
 								"avatars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resent email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"someuser@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}{{auth}}/verify",
+							"host": [
+								"{{host}}{{auth}}"
+							],
+							"path": [
+								"verify"
 							]
 						}
 					},

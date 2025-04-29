@@ -1,5 +1,14 @@
 import { User } from "../db/models/User.js";
-const attributeList = ["id", "email", "subscription", "token", "password", "avatarURL"];
+const attributeList = [
+  "id",
+  "email",
+  "subscription",
+  "token",
+  "password",
+  "avatarURL",
+  "verify",
+  "verificationToken",
+];
 import { NotFoundError } from "../helpers/NotFoundError.js";
 import { EmailAlreadyExistsError } from "../helpers/EmailAlreadyExistsError.js";
 import { passwordService } from "./passwordService.js";
@@ -34,7 +43,7 @@ async function getByEmailInner(email) {
   });
 }
 
-async function create(email, password, avatarUrl) {
+async function create(email, password, avatarUrl, verificationToken) {
   const existingUser = await getByEmailInner(email);
   if (existingUser) {
     throw new EmailAlreadyExistsError("Email in use");
@@ -46,6 +55,8 @@ async function create(email, password, avatarUrl) {
     password: hashedPassword,
     subscription: defaultSubscription,
     avatarURL: avatarUrl,
+    verify: false,
+    verificationToken: verificationToken,
   });
 }
 
@@ -59,6 +70,13 @@ async function update(email, subscription, token) {
       user.token = token;
     }
 
+    return user.save();
+  });
+}
+
+async function updateVerificationToken(email, verificationToken) {
+  return await getByEmail(email).then((user) => {
+    user.verificationToken = verificationToken;
     return user.save();
   });
 }
@@ -77,6 +95,21 @@ async function updateAvatar(id, avatarUrl) {
   });
 }
 
+async function verifyUser(verificationToken) {
+  return await User.findOne({
+    where: {
+      verificationToken: verificationToken,
+    },
+  }).then((user) => {
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+    user.verify = true;
+    user.verificationToken = null;
+    return user.save();
+  });
+}
+
 export const usersService = {
   getById,
   getByEmail,
@@ -84,4 +117,6 @@ export const usersService = {
   update,
   removeTokenFromUser,
   updateAvatar,
+  verifyUser,
+  updateVerificationToken,
 };

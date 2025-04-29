@@ -14,7 +14,7 @@ jest.mock("../helpers/fileValidator.js", () => ({
 import { loginUser } from "./authController.js";
 import { usersService } from "../services/usersServices.js";
 import { passwordService } from "../services/passwordService.js";
-import jwt from "jsonwebtoken";
+import jwt, { verify } from "jsonwebtoken";
 import {ensureDirExists} from "../helpers/fileValidator.js";
 
 describe("loginUser", () => {
@@ -48,6 +48,8 @@ describe("loginUser", () => {
       password: "hashed_password",
       subscription: "starter",
       avatarURL: "/path/to/avatar.jpg",
+      verify: true,
+      verificationToken: null,
     });
     passwordService.comparePassword = jest.fn().mockResolvedValue(true);
     jwt.sign = jest.fn().mockReturnValue(token);

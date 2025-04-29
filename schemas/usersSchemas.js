@@ -1,3 +1,4 @@
+import e from "express";
 import Joi from "joi";
 
 export const createUserSchema = Joi.object({
@@ -13,4 +14,8 @@ export const loginUserSchema = Joi.object({
 export const subscriptionUserSchema = Joi.object({
     email: Joi.string().email().required(),
     subscription: Joi.string().valid('starter', 'pro', 'business').required(),
+});
+
+export const resendVerificationSchema = Joi.object({
+    email: Joi.string().required(),
 });

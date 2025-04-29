@@ -10,8 +10,11 @@ function toResponse(contact) {
   return contact.toJSON();
 }
 
-async function listContacts(favorite, page, limit) {
-  const whereClause = favorite !== null ? { favorite } : {}; // Add condition if favorite is not null
+async function listContacts(favorite, userId, page, limit) {
+  const whereClause = {
+    owner: userId,
+    ...(favorite !== null && { favorite }),
+  };
   const contacts = await Contact.findAll({
     where: whereClause, // Apply the where clause
     offset: (page -1) * limit, 
@@ -22,18 +25,18 @@ async function listContacts(favorite, page, limit) {
   return contacts.map((contact) => toResponse(contact));
 }
 
-async function getEntityById(contactId) {
+async function getEntityById(contactId, userId) {
   return await Contact.findOne({
     where: {
       id: contactId,
+      owner: userId,
     },
     attributes: attributeList,
   });
 }
 
-async function getContactById(contactId) {
-  return await getEntityById(contactId).then((contact) => {
-    console.error(`contact = ${contact}`);
+async function getContactById(contactId, userId) {
+  return await getEntityById(contactId, userId).then((contact) => {
 
     if (!contact) {
       throw notFoundError;
@@ -43,7 +46,7 @@ async function getContactById(contactId) {
 }
 
 async function removeContact(contactId, userId) {
-  const entry = await getEntityById(contactId);
+  const entry = await getEntityById(contactId, userId);
   if (!entry) {
     throw notFoundError;
   }
@@ -71,9 +74,6 @@ async function updateContact(id, name, email, phone, userId) {
     if (!contact) {
       throw notFoundError;
     }
-
-    console.log(`contact.owner = ${contact.owner}`);
-    console.log(`userId = ${userId}`);
 
     if (contact.owner !== userId) {
       throw forbiddenOperationError;

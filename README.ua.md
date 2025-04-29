@@ -1,67 +1,107 @@
-# Робота з файлами та тестування додатків
+# Email
 
 - [English](README.md)
 
-Створи гілку `hw05-avatars` з гілки master.
+Створи гілку `hw06-email` з гілки `master`.
 
-Продовж створення REST API для роботи з колекцією контактів. Додай можливість завантаження аватарки користувача через [Multer](https://www.npmjs.com/package/multer) .
+## Як повинен працювати процес верифікації 
+
+* Після реєстрації, користувач повинен отримати лист на вказану при реєстрації пошту з посиланням для верифікації свого email
+* Пройшовши посиланням в отриманому листі, в перший раз, користувач повинен отримати Відповідь зі статусом 200, що буде мати на увазі успішну верифікацію email
+* Пройшовши по посиланню повторно користувач повинен отримати Помилку зі статусом 404
 
 ## Крок 1
-Створи папку `public` для роздачі статики. У цій папці зроби папку avatars.
+Створення ендпоінта для верифікації email
 
-Налаштуй Express на роздачу статичних файлів з папки `public`.
+1. Додати в модель `User` два поля `verificationToken` і `verify`. Значення поля `verify` рівне `false` означатиме, що його `email` ще не пройшов верифікацію
 
-Поклади будь-яке зображення в папку `public/avatars` і перевір, що роздача статики працює.
+2. Створити ендпоінт `GET /auth/verify/:verificationToken(# verification-request)`, де по параметру `verificationToken` ми будемо шукати користувача в моделі User
 
-При переході по такому URL браузер відобразить зображення. Shell `http://locahost:<порт>/avatars/<ім'я файлу з розширенням>`
+* Якщо користувач з таким токеном не знайдений, необхідно повернути Помилку `'Not Found'`
+* Якщо користувач знайдений, встановлюємо `verificationToken` в `null`, а поле verify ставимо рівним true в документі користувача і повертаємо Успішну відповідь
 
-## Крок 2
-У схему користувача додай нову властивість avatarURL для зберігання зображення.
-
-Використовуй пакет `gravatar` для того, щоб при реєстрації нового користувача відразу згенерувати йому аватар по його email.
-
-## Крок 3
-
-При реєстрації користувача:
-* Створюй посилання на аватарку користувача за допомогою gravatar
-* Отриманий URL збережи в поле avatarURL під час створення користувача
-
+Verification request
 ```javascript
-PATCH /auth/avatars
-Content-Type: multipart/form-data
-Authorization: "Bearer {{token}}"
-RequestBody: завантажений файл
+GET /auth/verify/:verificationToken
+```
 
-# Успішна відповідь
-Status: 200 OK
-Content-Type: application/json
+Verification user Not Found
+```javascript
+Status: 404 Not Found
 ResponseBody: {
-  "avatarURL": "тут буде посилання на зображення"
-}
-
-# Неуспішна відповідь
-Status: 401 Unauthorized
-Content-Type: application/json
-ResponseBody: {
-  "message": "Not authorized"
+  message: 'User not found'
 }
 ```
-Створи папку `temp` в корені проекту і зберігай в неї завантажену аватарку.
 
-Перенеси аватарку користувача з папки temp в папку `public/avatars` і дай їй унікальне ім'я для конкретного користувача.
+Verification success response
+```javascript
+Status: 200 OK
+ResponseBody: {
+  message: 'Verification successful',
+}
+```
 
-Отриманий URL `/avatars/<ім'я файлу з розширенням>` та збережи в поле avatarURL користувача
+## Крок 3
+Додавання відправки `email` користувачу з посиланням для верифікації
+
+При створення користувача при реєстрації:
+
+* Створити `verificationToken` для користувача і записати його в БД (для генерації токена використовуйте пакет `uuid` або `nanoid`)
+* Відправити `email` на пошту користувача і вказати посилання для верифікації `email'а` (`/auth/verify/:verificationToken`) в повідомленні
+* Так само необхідно враховувати, що тепер логін користувача не дозволено, якщо не верифікувано email
 
 ## Крок 4
-Додай можливість поновлення аватарки, створивши ендпоінт `/auth/avatars` і використовуючи метод PATCH.
 
-## Додаткове завдання (необов'язкове)
+Додавання повторної відправки email користувачу з посиланням для верифікації
 
-Написати `unit-тести` для контролера входу (логін) за допомогою Jest:
+Необхідно передбачити, варіант, що користувач може випадково видалити лист. Воно може не дійти з якоїсь причини до адресата. Наш сервіс відправки листів під час реєстрації видав помилку і т.д.
 
-відповідь повина мати статус-код `200`
-* у відповіді повинен повертатися токен
-* у відповіді повинен повертатися об'єкт user з 2 полями `email` и `subscription` з типом даних `String`
+`POST /auth/verify`
+
+Отримує body в форматі `{email}`
+Якщо в body немає обов'язкового поля `email`, повертає json з ключем `{"message":"missing required field email"}` і статусом 400
+Якщо з body все добре, виконуємо повторну відправку листа з `verificationToken` на вказаний email, але тільки якщо користувач не верифікований
+Якщо користувач вже пройшов верифікацію відправити json з ключем `{"message":"Verification has already been passed"}` зі статусом `400 Bad Request`
+
+Resending an email request
+
+```javascript
+POST /auth/verify
+Content-Type: application/json
+RequestBody: {
+  "email": "example@example.com"
+}
+```
+
+Resending an email validation error
+
+```javascript
+Status: 400 Bad Request
+Content-Type: application/json
+ResponseBody:  {
+  "message": "Помилка від Joi або іншої бібліотеки валідації"
+}
+```
+
+Resending an email success response
+
+```javascript
+Status: 200 Ok
+Content-Type: application/json
+ResponseBody: {
+  "message": "Verification email sent"
+}
+```
+
+Resend email for verified user
+
+```javascript
+Status: 400 Bad Request
+Content-Type: application/json
+ResponseBody: {
+  message: "Verification has already been passed"
+}
+```
 
 ## Вимоги
 * Створена БД за допомогою [Render](https://render.com/) або інший Postgres
@@ -118,6 +158,6 @@ docker tag goit-node-rest-api-app:latest <repo>/goit-node-rest-api-app:<tag>
 ``` 
  
 ## Postman
-доступні файли [колекції](/doc/postman/goit-node-rest-api-v3.postman_collection) та [оточення](/doc/postman/local-contacts-v3.postman_environment) для імпорту
+доступні файли [колекції](/doc/postman/goit-node-rest-api-v4.postman_collection) та [оточення](/doc/postman/local-contacts-v4.postman_environment) для імпорту
 
 ![postman](/doc/resources/image.png)

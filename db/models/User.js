@@ -38,6 +38,14 @@ User.init(
       type: DataTypes.STRING,
       defaultValue: null,
     },
+    verify: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    verificationToken: {
+      type: DataTypes.STRING,
+    },
   },
   {
     tableName: "users",

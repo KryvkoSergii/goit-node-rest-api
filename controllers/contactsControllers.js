@@ -21,18 +21,20 @@ export const getAllContacts = (req, res) => {
   const page = req.query.page || 1;
   const limit = req.query.limit || 20;
   const favorite = req.query.favorite || null;
+  const usr = req.user;
 
   contactsService
-    .listContacts(favorite, page, limit)
+    .listContacts(favorite, usr.id, page, limit)
     .then((data) => handleSuccess(res, data))
     .catch((err) => handleError(res, err));
 };
 
 export const getOneContact = (req, res) => {
   const id = req.params.id;
+  const usr = req.user;
 
   contactsService
-    .getContactById(id)
+    .getContactById(id, usr.id)
     .then((data) => handleSuccess(res, data))
     .catch((err) => handleError(res, err));
 };
